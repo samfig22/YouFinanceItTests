@@ -4,6 +4,7 @@ C:\Users\sf401\source\repos\YouFinanceItTests\obj\Debug\net9.0\YouFinanceItTests
 C:\Users\sf401\source\repos\YouFinanceItTests\obj\Debug\net9.0\YouFinanceItTests.AssemblyInfoInputs.cache
 C:\Users\sf401\source\repos\YouFinanceItTests\obj\Debug\net9.0\YouFinanceItTests.AssemblyInfo.cs
 C:\Users\sf401\source\repos\YouFinanceItTests\obj\Debug\net9.0\YouFinanceItTests.csproj.CoreCompileInputs.cache
+C:\Users\sf401\source\repos\YouFinanceItTests\obj\Debug\net9.0\YouFinanceItTests.sourcelink.json
 C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\testhost.dll
 C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\YouFinanceIt.deps.json
 C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\YouFinanceIt.runtimeconfig.json
@@ -23,6 +24,7 @@ C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\YouFinanceItTests
 C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\YouFinanceItTests.pdb
 C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\Azure.Core.dll
 C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\Azure.Identity.dll
+C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\Castle.Core.dll
 C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\Microsoft.AspNetCore.Cryptography.Internal.dll
 C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
 C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
@@ -65,6 +67,7 @@ C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\Microsoft.TestPla
 C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\Microsoft.TestPlatform.Utilities.dll
 C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\Microsoft.VisualStudio.TestPlatform.Common.dll
 C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\Moq.dll
 C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\Newtonsoft.Json.dll
 C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\NuGet.Frameworks.dll
 C:\Users\sf401\source\repos\YouFinanceItTests\bin\Debug\net9.0\System.ClientModel.dll

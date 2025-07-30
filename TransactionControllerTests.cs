@@ -5,10 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Xunit;
 using YouFinanceIt.Data;
 using YouFinanceIt.Services;
+using YouFinanceIt.Models;
 
 namespace YouFinanceIt.Tests
 {
-    public class UnitTest1
+    public class TransactionControllerTests
     {
         private ApplicationDbContext GetInMemoryDbContext()
         {
