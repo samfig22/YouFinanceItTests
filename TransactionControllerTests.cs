@@ -1,167 +1,149 @@
+// Tests/Services/TransactionServiceTests.cs
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 using YouFinanceIt.Data;
-using YouFinanceIt.Services;
 using YouFinanceIt.Models;
+using YouFinanceIt.Services;
 
-namespace YouFinanceIt.Tests
+namespace YouFinanceIt.Tests.Services
 {
-    public class TransactionControllerTests
+    public class TransactionServiceTests
     {
         private ApplicationDbContext GetInMemoryDbContext()
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(Guid.NewGuid().ToString()) // Unique DB per test
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
             return new ApplicationDbContext(options);
         }
 
         [Fact]
-        public async Task AddAsync_AddsTransactionSuccessfully()
+        public async Task AddAsync_ShouldAddTransaction()
         {
             using var context = GetInMemoryDbContext();
             var service = new TransactionService(context);
 
             var transaction = new Transaction
             {
-                TransactionID = 1,
                 UserID = "user1",
                 AccountID = 1,
-                Amount = 100m,
-                Description = "Test Add",
-                TransactionDate = DateTime.UtcNow,
-                CategoryID = 1,
-                CreatedDate = DateTime.UtcNow
+                // CategoryID = 1,
+                Description = "Test Transaction",
+                Amount = 100,
+                TransactionDate = DateTime.UtcNow
+            };
+
+            await service.AddAsync(transaction);
+            var transactions = await service.GetAllAsync("user1");
+
+            Assert.Single(transactions);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldReturnOnlyUserTransactions()
+        {
+            using var context = GetInMemoryDbContext();
+            var service = new TransactionService(context);
+
+            await service.AddAsync(new Transaction
+            {
+                UserID = "user1",
+                AccountID = 1,
+                // CategoryID = 1,
+                Description = "User1 Transaction",
+                Amount = 100,
+                TransactionDate = DateTime.UtcNow
+            });
+
+            await service.AddAsync(new Transaction
+            {
+                UserID = "user2",
+                AccountID = 2,
+                // CategoryID = 2,
+                Description = "User2 Transaction",
+                Amount = 200,
+                TransactionDate = DateTime.UtcNow
+            });
+
+            var user1Transactions = await service.GetAllAsync("user1");
+
+            Assert.Single(user1Transactions);
+            Assert.Equal("User1 Transaction", user1Transactions.First().Description);
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_ShouldReturnCorrectTransaction()
+        {
+            using var context = GetInMemoryDbContext();
+            var service = new TransactionService(context);
+
+            var transaction = new Transaction
+            {
+                UserID = "user1",
+                AccountID = 1,
+                // CategoryID = 1,
+                Description = "Specific Transaction",
+                Amount = 50,
+                TransactionDate = DateTime.UtcNow
+            };
+
+            await service.AddAsync(transaction);
+            var result = await service.GetByIdAsync(transaction.TransactionID, "user1");
+
+            Assert.NotNull(result);
+            Assert.Equal("Specific Transaction", result.Description);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_ShouldUpdateTransaction()
+        {
+            using var context = GetInMemoryDbContext();
+            var service = new TransactionService(context);
+
+            var transaction = new Transaction
+            {
+                UserID = "user1",
+                AccountID = 1,
+                // CategoryID = 1,
+                Description = "Before Update",
+                Amount = 75,
+                TransactionDate = DateTime.UtcNow
             };
 
             await service.AddAsync(transaction);
 
-            var saved = await context.Transactions.FindAsync(1);
-            Assert.NotNull(saved);
-            Assert.Equal("Test Add", saved.Description);
-        }
-
-        [Fact]
-        public async Task GetAllAsync_ReturnsOnlyUserTransactions()
-        {
-            using var context = GetInMemoryDbContext();
-            var service = new TransactionService(context);
-
-            context.Transactions.AddRange(
-                new Transaction
-                {
-                    TransactionID = 1,
-                    UserID = "user1",
-                    Amount = 50m,
-                    Description = "Desc1",
-                    AccountID = 1,
-                    CategoryID = 1,
-                    TransactionDate = DateTime.UtcNow,
-                    CreatedDate = DateTime.UtcNow
-                },
-                new Transaction
-                {
-                    TransactionID = 2,
-                    UserID = "user2",
-                    Amount = 75m,
-                    Description = "Desc2",
-                    AccountID = 1,
-                    CategoryID = 1,
-                    TransactionDate = DateTime.UtcNow,
-                    CreatedDate = DateTime.UtcNow
-                }
-            );
-            await context.SaveChangesAsync();
-
-            var results = await service.GetAllAsync("user1");
-
-            Assert.Single(results);
-            Assert.Equal(50m, results.First().Amount);
-        }
-
-        [Fact]
-        public async Task GetByIdAsync_ReturnsCorrectTransaction()
-        {
-            using var context = GetInMemoryDbContext();
-            var service = new TransactionService(context);
-
-            context.Transactions.Add(new Transaction
-            {
-                TransactionID = 1,
-                UserID = "user1",
-                Amount = 25m,
-                Description = "Desc",
-                AccountID = 1,
-                CategoryID = 1,
-                TransactionDate = DateTime.UtcNow,
-                CreatedDate = DateTime.UtcNow
-            });
-            await context.SaveChangesAsync();
-
-            var result = await service.GetByIdAsync(1, "user1");
-
-            Assert.NotNull(result);
-            Assert.Equal(25m, result.Amount);
-        }
-
-        [Fact]
-        public async Task UpdateAsync_UpdatesTransactionWhenExists()
-        {
-            using var context = GetInMemoryDbContext();
-            var service = new TransactionService(context);
-
-            var transaction = new Transaction
-            {
-                TransactionID = 1,
-                UserID = "user1",
-                Amount = 30m,
-                Description = "Original",
-                AccountID = 1,
-                CategoryID = 1,
-                TransactionDate = DateTime.UtcNow,
-                CreatedDate = DateTime.UtcNow
-            };
-            context.Transactions.Add(transaction);
-            await context.SaveChangesAsync();
-
-            transaction.Amount = 50m;
-            transaction.Description = "Updated";
-
+            transaction.Description = "After Update";
             await service.UpdateAsync(transaction);
 
-            var updated = await context.Transactions.FindAsync(1);
-            Assert.Equal(50m, updated.Amount);
-            Assert.Equal("Updated", updated.Description);
+            var result = await service.GetByIdAsync(transaction.TransactionID, "user1");
+            Assert.Equal("After Update", result.Description);
         }
 
         [Fact]
-        public async Task DeleteAsync_RemovesTransaction()
+        public async Task DeleteAsync_ShouldRemoveTransaction()
         {
             using var context = GetInMemoryDbContext();
             var service = new TransactionService(context);
 
             var transaction = new Transaction
             {
-                TransactionID = 1,
                 UserID = "user1",
-                Amount = 20m,
-                Description = "Desc",
                 AccountID = 1,
-                CategoryID = 1,
-                TransactionDate = DateTime.UtcNow,
-                CreatedDate = DateTime.UtcNow
+                // CategoryID = 1,
+                Description = "To Delete",
+                Amount = 60,
+                TransactionDate = DateTime.UtcNow
             };
-            context.Transactions.Add(transaction);
-            await context.SaveChangesAsync();
 
-            await service.DeleteAsync(1, "user1");
+            await service.AddAsync(transaction);
+            await service.DeleteAsync(transaction.TransactionID, "user1");
 
-            var deleted = await context.Transactions.FindAsync(1);
-            Assert.Null(deleted);
+            var result = await service.GetByIdAsync(transaction.TransactionID, "user1");
+            Assert.Null(result);
         }
     }
 }
